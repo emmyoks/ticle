@@ -1,0 +1,13 @@
+let formData = new FormData(event.target);
+let formData = new FormData();
+formData.append(key,value);
+
+$('meta[name="csrf-token"]').attr('content)
+
+Post::whereBelongsTo($user)->get()
+
+Left withss
+*like feature
+*Delete ticle feature
+*protecting Ticles from geting edited or deleted by other users
+*protect the write route (not just the post ticle)

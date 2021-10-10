@@ -1,0 +1,122 @@
+*{
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+
+.app{
+    min-height: calc(100vh - 104px);
+    /* width:100% */
+}
+
+.navbar{
+    height:3.25rem;
+}
+
+.b-line{
+    border-bottom:1px solid #333;
+}
+
+.default_dp{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    display:inline-block;
+}
+
+@keyframes spin{
+    from{transform:rotatez(0deg)}
+    to{transform:rotatez(360deg)}
+}
+.active .refresh{
+    animation:spin 1s ease-out infinite;
+}
+
+.Blog-list ul{
+    list-style:none;
+}
+
+/* ticle details */
+.by .image{
+    display:inline-block;
+}
+
+
+.ticle-body::first-letter{
+    padding-left:20px;
+    font-size: 150%;
+    font-weight:500;
+}
+
+.write-ticle .title, .write-ticle .body {
+    width:100%;
+}
+
+.write-ticle .title {
+    background-color: rgba(0,0,0,0);
+    border:none;
+}
+.write-ticle .title:focus {
+    outline:none;
+}
+.write-ticle .body{
+    background-color: rgba(255,255,255,0.5);
+}
+
+.user-profile-post .user-ticles{
+    max-height:100vh;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+
+/* .user-profile{
+    
+} */
+
+.options_btn{
+    padding:5px 10px;
+    margin-bottom: 15px;
+    height:auto;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.options{
+    position: absolute;
+    padding:5px;
+    margin-right: 15px;
+    top:0;
+    right:0;
+}
+
+.options_modal{
+    padding: 15px;
+    background-color: #fff;
+    z-index: 11;
+}
+
+.options_bg{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left:0;
+}
+
+footer{
+    min-height: 52px;
+}
+footer > div{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: fit-content;
+    font-size: 1.2em;
+}
+
+footer .columns:last-child {
+    margin-bottom: 0;
+}
