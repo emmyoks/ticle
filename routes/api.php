@@ -37,3 +37,5 @@ Route::get('/user', [AuthController::class, 'get_user']);
 Route::get('/index/{op?}', [TicleController::class, 'index']);
 Route::get('/get/ticle/{id}', [TicleController::class, 'get_ticle']);
 Route::get('/get/ticle/comments/{id}', [TicleController::class, 'get_ticle_comments']);
+Route::get('/like/ticle/{ticle_id}', [TicleController::class, 'like_ticle']);
+Route::get('/delete/ticle/{ticle_id}', [AuthController::class, 'delete_ticle']);

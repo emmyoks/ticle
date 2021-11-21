@@ -1,7 +1,14 @@
 import {Link} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useGet from './useGet';
+import axios from 'axios';
 
 const TicleList = ({ticles,ticlerInfo}) => {
+
+    const {data:currentUser, pending:p, err:e} = useGet('/api/user');
+    const handleLike = (ticleId) => {
+        axios.get(`${baseUrl}/api/like/ticle/${ticleId}`)
+    }
     
     return(
         <div className="Blog-list">
@@ -21,12 +28,12 @@ const TicleList = ({ticles,ticlerInfo}) => {
                                         <br />
                                         <h5 className="sub-title">{ticle.title}</h5>
                                         <p>{ticle.body}</p>
-                                    
+                                {currentUser && <p className="has-text-right px-5" onClick= {(e)=>{e.preventDefault();
+                                    handleLike(ticle.id)}}>
+                                    <FontAwesomeIcon icon={[ticle.likes.includes(currentUser.id)?'fas':'far', 'heart']} size="lg" color="red" />
+                                    <small>{ticle.likes.length}</small>
+                                </p> } 
                                 </div>
-                                <p className="has-text-right px-5">
-                                    <FontAwesomeIcon icon={['fas', 'heart']} size="lg" color="red" />
-                                    <small>100</small>
-                                </p>
                             </div>
                         </article>
                      </Link>

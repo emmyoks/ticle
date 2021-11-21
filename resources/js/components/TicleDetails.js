@@ -4,16 +4,36 @@ import {Link} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useGet from './useGet';
 import Comment from './Comment.js';
+import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 const TicleDetails = () => {
     const {id} = useParams();
     const {data:ticle, pending, err} = useGet(`${baseUrl}/api/get/ticle/${id}`)
-    const {data:currentUser, pending:p, err:e} = useGet('/api/user');
+    // const {data:currentUser, pending:p, err:e} = useGet('/api/user');
+    const history = useHistory();
 
     const [options,setOptions] = useState('is-hidden')
+    const [currentUser,setCurrentUser] = useState(() => {
+        let userId;
+        axios.get(`${baseUrl}/api/user`)
+            .then((res)=>{
+                userId = res.data.id;
+                console.log(userId)
+            })
+        return userId;
+    })
 
     const deleteTicle = () => {
         console.log("delete")
+        axios.get(`${baseUrl}/api/delete/ticle/${id}`)
+            .then((res)=>{
+                console.log(res)
+                history.push(`/`);
+            })
+            .catch((err)=>{
+                console.log(err.response.data.message)
+            })
     }
 
     return(
@@ -27,6 +47,7 @@ const TicleDetails = () => {
                 }}
                 className="ticle-header p-5">
 
+                    {(currentUser === ticle.user_id) && 
                     <div className="options has-text-right ">
 
                         <i className=  "options_btn" onClick={ () => {
@@ -46,7 +67,7 @@ const TicleDetails = () => {
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div>}
                     <h2 className="title m-3 has-text-white has-text-centered">
                         {ticle.title}
                     </h2>

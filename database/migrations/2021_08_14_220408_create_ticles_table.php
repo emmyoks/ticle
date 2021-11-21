@@ -19,7 +19,7 @@ class CreateTiclesTable extends Migration
             $table->string('title');
             $table->string('cover_img')->nullable();
             $table->text('body');
-            $table->text('likes')->nullable();
+            $table->json('likes')->default('[]');
             $table->timestamps();
         });
        

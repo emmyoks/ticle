@@ -7,7 +7,11 @@ $('meta[name="csrf-token"]').attr('content)
 Post::whereBelongsTo($user)->get()
 
 Left withss
-*like feature
-*Delete ticle feature
+
+**like feature
+**Delete ticle feature
 *protecting Ticles from geting edited or deleted by other users
 *protect the write route (not just the post ticle)
+*unauthorised users can't access the NavBar
+*indicate if search term is not found ( in the search page)
+* access to register link in the login page

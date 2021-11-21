@@ -1,17 +1,14 @@
 import {useState} from "react";
-import { useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
-    const [name,setName] = useState("");
-    const [displayName,setDisplayName] = useState("");
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
-    const [comfirmPassword,setComfirmPassword] = useState("");
     const [pending,setPending] = useState(false);
+    const [errorMessage,setErrorMessage] = useState(false);
 
-    const history = useHistory()
 
     
     const hLogin = (e) => {
@@ -25,15 +22,12 @@ const Login = () => {
         axios.post(`${baseUrl}/api/login`, obj)
             .then((res) => {
                 setPending(false);
-
-                // history.go(1) - for redirecting forward  to the previous page
-                // and history.go(-1) - for redirecting backwards to the previous page
                 console.log(res)
                 localStorage.setItem('accessToken',res.data.access_token)
-                history.push(`/`);
+                window.location.replace("/profile")
             })
             .catch(err => {
-                console.log(err)
+                setErrorMessage(err.response.data.message)
                 setPending(false);
             });
     }
@@ -43,11 +37,11 @@ const Login = () => {
             <div className="card column-4">
                 <div className="card-content">
                     <form onSubmit = {hLogin} className="content">
-
+                        {errorMessage && <p className="has-text-centered help is-danger">{errorMessage}</p>}
                         <div className="field">
                             <label className="label">Email</label>
                             <div className="control has-icons-left has-icons-right">
-                                <input className="input is-danger" type="email" name="email" placeholder="Email input" onChange={e => setEmail(e.target.value)} required />
+                                <input className="input" type="email" name="email" placeholder="Email input" onChange={e => setEmail(e.target.value)} required />
                                 <span className="icon is-small is-left">
                                     <FontAwesomeIcon icon={['fas', 'envelope']} />
                                 </span>
@@ -55,7 +49,6 @@ const Login = () => {
                                     <FontAwesomeIcon icon={['fas', 'exclamation-triangle']} />
                                 </span>
                             </div>
-                            <p className="help is-success">This username is available</p>
                         </div>
                         
                         <div className="field">
@@ -77,6 +70,9 @@ const Login = () => {
                                 <button className={"button is-small is-link " + (pending && "is-loading")}> Login </button>
                             </div>
                         </div>
+                        <p className="has-text-centered help">
+                            <Link to="/register">Register as new user.</Link>
+                        </p>
                     </form>
                 </div>
             </div>

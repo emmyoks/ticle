@@ -1,6 +1,7 @@
 import {useState} from "react";
 import { useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
 
 const Register = () => {
@@ -10,6 +11,7 @@ const Register = () => {
     const [password,setPassword] = useState("");
     const [comfirmPassword,setComfirmPassword] = useState("");
     const [pending,setPending] = useState(false);
+    const [errorMessage,setErrorMessage] = useState(false);
 
     const history = useHistory()
 
@@ -30,10 +32,11 @@ const Register = () => {
                 // history.go(1) - for redirecting forward  to the previous page
                 // and history.go(-1) - for redirecting backwards to the previous page
                 console.log(res)
-                history.push(`/profile/${res.data.user.id}`);
+                localStorage.setItem('accessToken',res.data.access_token)
+                window.location.replace("/profile")
             })
             .catch(err => {
-                console.log(err)
+                setErrorMessage(err.response.data.message)
                 setPending(false);
             });
     }
@@ -43,7 +46,7 @@ const Register = () => {
             <div className="card column-4">
                 <div className="card-content">
                     <form onSubmit = {hRegistration} className="content">
-
+                        {errorMessage && <p className="has-text-centered help is-danger">{errorMessage}</p>}
                         <div className="field">
                             <label className="label">Name</label>
                             <div className="control">
@@ -55,7 +58,7 @@ const Register = () => {
                         <div className="field">
                             <label className="label">Display name</label>
                             <div className="control has-icons-left has-icons-right">
-                                <input className="input is-success" type="text" name="display_name" placeholder="Text input" onChange={e => setDisplayName(e.target.value)} required />
+                                <input className="input " type="text" name="display_name" placeholder="Text input" onChange={e => setDisplayName(e.target.value)} required />
                                 <span className="icon is-small is-left">
                                     <FontAwesomeIcon icon={['fas', 'user']} />
                                 </span>
@@ -63,13 +66,13 @@ const Register = () => {
                                     <FontAwesomeIcon icon={['fas', 'check']} />
                                 </span>
                             </div>
-                            <p className="help is-success">This username is available</p>
+                            {/* <p className="help is-success">This username is available</p> */}
                         </div>
 
                         <div className="field">
                             <label className="label">Email</label>
                             <div className="control has-icons-left has-icons-right">
-                                <input className="input is-danger" type="email" name="email" placeholder="Email input" onChange={e => setEmail(e.target.value)} required />
+                                <input className="input" type="email" name="email" placeholder="Email input" onChange={e => setEmail(e.target.value)} required />
                                 <span className="icon is-small is-left">
                                     <FontAwesomeIcon icon={['fas', 'envelope']} />
                                 </span>
@@ -77,7 +80,7 @@ const Register = () => {
                                     <FontAwesomeIcon icon={['fas', 'exclamation-triangle']} />
                                 </span>
                             </div>
-                            <p className="help is-success">This username is available</p>
+                            {/* <p className="help is-success">This username is available</p> */}
                         </div>
                         
                         <div className="field">
@@ -113,6 +116,9 @@ const Register = () => {
                                 <button className={"button is-small is-link " + (pending && "is-loading")}>Register</button>
                             </div>
                         </div>
+                        <p className="has-text-centered help">
+                            <Link to="/login">Already have an account</Link>
+                        </p>
                     </form>
                 </div>
             </div>

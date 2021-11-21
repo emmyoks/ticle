@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 // normally i won't include the 'use App\Http\Controllers\Controller;' line if i did not create a new folder for API controllers
 use App\Models\User;
+use App\Models\Ticle;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -18,10 +19,16 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:55',
             'display_name' => 'required|max:15',
-            'email' => 'email|required|unique:users',
+            'email' => 'email|required',
             'password' => 'required|confirmed'
         ]);
-
+        
+        if(User::where('display_name', $validatedData['display_name'])->exists()){
+            return response(['message' => 'Display name already exist'],422);
+        }
+        if(User::where('email', $validatedData['email'])->exists()){
+            return response(['message' => 'Email already exist'],422);
+        }
         $validatedData['password'] = bcrypt($request->password);
 
         $user = User::create($validatedData);
@@ -39,7 +46,8 @@ class AuthController extends Controller
         ]);
 
         if (!auth()->attempt($loginData)) {
-            return response(['message' => 'Invalid Credentials']);
+            return response(['message' => 'Invalid Credentials'],401);
+            // return error
         }
 
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
@@ -108,6 +116,23 @@ class AuthController extends Controller
         $user->save();
 
         return response($user);
+    }
+
+    public function delete_ticle(Request $request, $ticle_id){
+        $ticle = Ticle::findOrFail($ticle_id);
+        $userId = $request->user()->id;
+        if($userId === $ticle->user_id){
+            $ticle->delete();
+            $response = [
+                "message" => "Ticle has been successfully deleted."
+            ];
+            return response($response);
+        }else{
+            $response = [
+                "message" => "Not so sure how you got here or what you tryna do, but if you don't get the f!"
+            ];
+            return response($response, 403);
+        }
     }
 
 }

@@ -113,6 +113,20 @@ class TicleController extends Controller
         return response($comment);
     }
 
+    public function like_ticle(Request $request, $ticle_id){
+        if($request->user()->id){
+            $ticle = Ticle::findOrFail($ticle_id);
+            $likes = $ticle->likes;
+            array_push($likes, $request->user()->id);
+            $ticle->likes = $likes;
+            $ticle->save();
+            return response($ticle);
+        }
+        else{
+            return response([]);
+        }
+    }
+
     public function edit_ticle(Request $request){
         $data = $request->all();
         $validator = Validator::make($data, [
