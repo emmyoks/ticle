@@ -13373,12 +13373,24 @@ var WriteTicle = function WriteTicle() {
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     if (!ticle) {
+      var currentUser; // getting current user
+
+      axios__WEBPACK_IMPORTED_MODULE_2___default().get("".concat(baseUrl, "/api/user")).then(function (res) {
+        currentUser = res.data.id;
+      }); // getting ticle info
+
       axios__WEBPACK_IMPORTED_MODULE_2___default().get("".concat(baseUrl, "/api/get/ticle/").concat(id)).then(function (res) {
-        console.log(res);
-        setTicle(res.data);
-        setHeaderImg("".concat(imgUrl, "/cover_img/").concat(res.data.cover_img));
-        setTitle(res.data.title);
-        setBody(res.data.body);
+        console.log(res); // confirming if it is the ticle owner who is tryna edit his ticle
+
+        if (currentUser === res.data.user_id) {
+          setTicle(res.data);
+          setHeaderImg("".concat(imgUrl, "/cover_img/").concat(res.data.cover_img));
+          setTitle(res.data.title);
+          setBody(res.data.body);
+        } else {
+          // if it's not the ticle owner, take em back to the ticle details page
+          history.push("/ticle/".concat(id));
+        }
       })["catch"](function (err) {
         console.log(err);
       });
@@ -14285,21 +14297,6 @@ var Search = function Search() {
       searchLoading = _useState6[0],
       setSearchLoading = _useState6[1];
 
-  var handleSearch = function handleSearch(e) {
-    setSearchTerm(e.target.value);
-
-    if (searchTerm) {
-      setSearchLoading(true);
-      axios.get("".concat(baseUrl, "/api/search/q=").concat(searchTerm)).then(function (res) {
-        setTicles(res.data);
-        setSearchLoading(false);
-      })["catch"](function (err) {
-        console.log(err);
-        setSearchLoading(false);
-      });
-    }
-  };
-
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     if (searchTerm) {
       var cTS = axios.CancelToken.source();
@@ -14337,7 +14334,9 @@ var Search = function Search() {
           }
         })
       })
-    }), ticles && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TicleList__WEBPACK_IMPORTED_MODULE_1__.default, {
+    }), searchTerm && (searchLoading ? false : ticles == false && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("p", {
+      children: ["No Ticle found for ", searchTerm, ". "]
+    })), ticles && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TicleList__WEBPACK_IMPORTED_MODULE_1__.default, {
       ticles: ticles,
       ticlerInfo: true
     })]
@@ -14408,17 +14407,19 @@ var TicleDetails = function TicleDetails() {
       options = _useState2[0],
       setOptions = _useState2[1];
 
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(function () {
-    var userId;
-    axios__WEBPACK_IMPORTED_MODULE_4___default().get("".concat(baseUrl, "/api/user")).then(function (res) {
-      userId = res.data.id;
-      console.log(userId);
-    });
-    return userId;
-  }),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0),
       _useState4 = _slicedToArray(_useState3, 2),
       currentUser = _useState4[0],
       setCurrentUser = _useState4[1];
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!currentUser) {
+      axios__WEBPACK_IMPORTED_MODULE_4___default().get("".concat(baseUrl, "/api/user")).then(function (res) {
+        console.log(res);
+        setCurrentUser(res.data.id);
+      });
+    }
+  }, [currentUser]);
 
   var deleteTicle = function deleteTicle() {
     console.log("delete");
@@ -14952,7 +14953,24 @@ var WriteTicle = function WriteTicle() {
       pending = _useState8[0],
       setPending = _useState8[1];
 
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0),
+      _useState10 = _slicedToArray(_useState9, 2),
+      currentUser = _useState10[0],
+      setCurrentUser = _useState10[1];
+
   var history = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.useHistory)();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!currentUser) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get("".concat(baseUrl, "/api/user")).then(function (res) {
+        setCurrentUser(res.data);
+        console.log(res.data);
+
+        if (!res.data) {
+          history.push("/");
+        }
+      });
+    }
+  }, [currentUser]);
 
   var previewImage = function previewImage(e) {
     // var reader = new FileReader();

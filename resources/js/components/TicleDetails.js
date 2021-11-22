@@ -1,5 +1,5 @@
 import { useParams} from 'react-router-dom';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useGet from './useGet';
@@ -14,16 +14,17 @@ const TicleDetails = () => {
     const history = useHistory();
 
     const [options,setOptions] = useState('is-hidden')
-    const [currentUser,setCurrentUser] = useState(() => {
-        let userId;
-        axios.get(`${baseUrl}/api/user`)
-            .then((res)=>{
-                userId = res.data.id;
-                console.log(userId)
-            })
-        return userId;
-    })
+    const [currentUser,setCurrentUser] = useState(0)
 
+    useEffect( () => {
+        if(!currentUser){
+            axios.get(`${baseUrl}/api/user`)
+                .then((res)=>{
+                    console.log(res)
+                    setCurrentUser(res.data.id);
+                })
+        }
+    }, [currentUser] );
     const deleteTicle = () => {
         console.log("delete")
         axios.get(`${baseUrl}/api/delete/ticle/${id}`)

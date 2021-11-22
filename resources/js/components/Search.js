@@ -9,23 +9,6 @@ const Search = () => {
     const [ticles,setTicles] = useState();
     const [searchLoading,setSearchLoading] = useState(false);
 
-    const handleSearch = e => {
-        setSearchTerm(e.target.value)
-        if(searchTerm){
-            setSearchLoading(true)
-    
-            axios.get(`${baseUrl}/api/search/q=${searchTerm}`)
-                .then((res) => {
-                    setTicles(res.data)
-                    setSearchLoading(false)
-                })
-                .catch(err => {
-                    console.log(err)
-                    setSearchLoading(false)
-                });
-        }
-    }
-
     useEffect( () => {
         if(searchTerm){
             const cTS = axios.CancelToken.source();
@@ -61,6 +44,7 @@ const Search = () => {
                 <FontAwesomeIcon className="search_btn has-text-success" icon={['fas', 'check']} />
                 </div> */}
             </div>
+            {searchTerm &&(searchLoading?false:ticles==false && <p>No Ticle found for {searchTerm}. </p>)}
 
             {ticles && <TicleList ticles={ticles} ticlerInfo={true} />}
         </div>

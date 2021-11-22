@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 
@@ -7,9 +7,22 @@ const WriteTicle = () => {
     const [body,setBody] = useState('');
     const [headerImg,setHeaderImg] = useState(imgUrl +"/bg.jpg");
     const [pending,setPending] = useState(false);
+    const [currentUser,setCurrentUser] = useState(0)
 
     const history = useHistory()
 
+    useEffect( () => {
+        if(!currentUser){
+            axios.get(`${baseUrl}/api/user`)
+                .then((res)=>{
+                    setCurrentUser(res.data);
+                    console.log(res.data)
+                    if(!res.data){
+                        history.push("/");
+                    }
+                })
+        }
+    }, [currentUser] );
 
     const previewImage = (e) => {
         // var reader = new FileReader();

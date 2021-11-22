@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Auth;
 // normally i won't include the 'use App\Http\Controllers\Controller;' line if i did not create a new folder for API controllers
 use App\Models\User;
 use App\Models\Ticle;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     public function __construct(){
-        $this->middleware("auth:api", ["except" => ["login", "register"]]);
+        $this->middleware("auth:api", ["except" => ["login", "register", "get_user"]]);
     }
 
     public function register(Request $request)
@@ -79,9 +80,9 @@ class AuthController extends Controller
     }
     
     public function get_user(Request $request){
-        $user = User::findOrFail($request->user()->id);
+        // $user = User::findOrFail($request->user()->id);
 
-        return response($user);
+        return response(Auth::guard('api')->user());
     }
 
     public function edit_user_profile(Request $request){
@@ -116,23 +117,6 @@ class AuthController extends Controller
         $user->save();
 
         return response($user);
-    }
-
-    public function delete_ticle(Request $request, $ticle_id){
-        $ticle = Ticle::findOrFail($ticle_id);
-        $userId = $request->user()->id;
-        if($userId === $ticle->user_id){
-            $ticle->delete();
-            $response = [
-                "message" => "Ticle has been successfully deleted."
-            ];
-            return response($response);
-        }else{
-            $response = [
-                "message" => "Not so sure how you got here or what you tryna do, but if you don't get the f!"
-            ];
-            return response($response, 403);
-        }
     }
 
 }

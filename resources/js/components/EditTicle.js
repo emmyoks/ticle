@@ -16,13 +16,26 @@ const WriteTicle = () => {
 
     useEffect( () => {
         if(!ticle){
+            let currentUser;
+            // getting current user
+            axios.get(`${baseUrl}/api/user`)
+            .then((res)=>{
+                currentUser = res.data.id;
+            })
+            // getting ticle info
             axios.get(`${baseUrl}/api/get/ticle/${id}`)
                     .then(res => {
                         console.log(res)
-                        setTicle(res.data)
-                        setHeaderImg(`${imgUrl}/cover_img/${res.data.cover_img}`)
-                        setTitle(res.data.title)
-                        setBody(res.data.body)
+                        // confirming if it is the ticle owner who is tryna edit his ticle
+                        if(currentUser === res.data.user_id){
+                            setTicle(res.data)
+                            setHeaderImg(`${imgUrl}/cover_img/${res.data.cover_img}`)
+                            setTitle(res.data.title)
+                            setBody(res.data.body)
+                        }else{
+                            // if it's not the ticle owner, take em back to the ticle details page
+                            history.push(`/ticle/${id}`);
+                        }
                     })
                     .catch(err => {
                     console.log(err)

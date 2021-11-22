@@ -10,8 +10,8 @@ Left withss
 
 **like feature
 **Delete ticle feature
-*protecting Ticles from geting edited or deleted by other users
-*protect the write route (not just the post ticle)
-*unauthorised users can't access the NavBar
+**protecting Ticles from geting edited or **deleted by other users
+**protect the write route (not just the post ticle)
+X*unauthorised users can't access the NavBar
 *indicate if search term is not found ( in the search page)
-* access to register link in the login page
+** access to register link in the login page

@@ -141,37 +141,62 @@ class TicleController extends Controller
         }
 
         $ticle = Ticle::findOrFail($request->input('ticle_id'));
-         // Handle file upload 
-        if($request->hasFile('cover_img')){
-            // Get image file name with extension
-            $file= $request->file('cover_img');
-            // $fileName = $request->user_id;
-            $fileName = "cover_img";
-            // GET only image extension
-            $fileExt = $file->getClientOriginalExtension();
-            // File name store so that there wont be a clash when user upload files of different names
-            $fileNameToStore = $fileName.'_'.time().'.'.$fileExt;
-            // get a better way to do this
-            $path = Env('COVER_IMAGE_PATH');
-            
-            $upload = $file->move($path, $fileNameToStore);
-            if($request->input('initial_cover_img') != "default_cover.jpg"){
-                if( file_exists($path.'\\'.$request->input('initial_cover_img')) ){
-                    unlink($path.'\\'.$request->input('initial_cover_img'));
-                }
+        $userId = $request->user()->id;
+        if($userId === $ticle->user_id){
+             // Handle file upload 
+            if($request->hasFile('cover_img')){
+                // Get image file name with extension
+                $file= $request->file('cover_img');
+                // $fileName = $request->user_id;
+                $fileName = "cover_img";
+                // GET only image extension
+                $fileExt = $file->getClientOriginalExtension();
+                // File name store so that there wont be a clash when user upload files of different names
+                $fileNameToStore = $fileName.'_'.time().'.'.$fileExt;
+                // get a better way to do this
+                $path = Env('COVER_IMAGE_PATH');
+                
+                $upload = $file->move($path, $fileNameToStore);
+                    if($request->input('initial_cover_img') != "default_cover.jpg"){
+                        if( file_exists($path.'\\'.$request->input('initial_cover_img')) ){
+                            unlink($path.'\\'.$request->input('initial_cover_img'));
+                        }
+                    }
+                $ticle->cover_img = $fileNameToStore;
             }
-            $ticle->cover_img = $fileNameToStore;
+
+            $ticle->title = $request->input('title');
+            $ticle->body = $request->input('body');
+            $ticle->save();
+
+            $response = [
+                'success' => 'Ticle edited successfully'
+            ];
+
+            return response($response);
+        }else{
+            $response = [
+                "message" => "Not so sure how you got here or what you tryna do, but if you don't get the f!"
+            ];
+            return response($response, 403);
         }
+    }
 
-        $ticle->title = $request->input('title');
-        $ticle->body = $request->input('body');
-        $ticle->save();
-
-        $response = [
-            'success' => 'Ticle edited successfully'
-        ];
-
-        return response($response);
+    public function delete_ticle(Request $request, $ticle_id){
+        $ticle = Ticle::findOrFail($ticle_id);
+        $userId = $request->user()->id;
+        if($userId === $ticle->user_id){
+            $ticle->delete();
+            $response = [
+                "message" => "Ticle has been successfully deleted."
+            ];
+            return response($response);
+        }else{
+            $response = [
+                "message" => "Not so sure how you got here or what you tryna do, but if you don't get the f!"
+            ];
+            return response($response, 403);
+        }
     }
 
 }
