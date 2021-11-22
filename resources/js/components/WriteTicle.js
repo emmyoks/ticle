@@ -7,22 +7,23 @@ const WriteTicle = () => {
     const [body,setBody] = useState('');
     const [headerImg,setHeaderImg] = useState(imgUrl +"/bg.jpg");
     const [pending,setPending] = useState(false);
-    const [currentUser,setCurrentUser] = useState(0)
+    const [currentUser,setCurrentUser] = useState(0);
+    const [haveUser, setHaveUser] = useState(false)
 
     const history = useHistory()
 
     useEffect( () => {
-        if(!currentUser){
+        if(!haveUser){
             axios.get(`${baseUrl}/api/user`)
                 .then((res)=>{
                     setCurrentUser(res.data);
-                    console.log(res.data)
+                    setHaveUser(true)
                     if(!res.data){
                         history.push("/");
                     }
                 })
         }
-    }, [currentUser] );
+    }, [haveUser] );
 
     const previewImage = (e) => {
         // var reader = new FileReader();

@@ -14958,19 +14958,24 @@ var WriteTicle = function WriteTicle() {
       currentUser = _useState10[0],
       setCurrentUser = _useState10[1];
 
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+      _useState12 = _slicedToArray(_useState11, 2),
+      haveUser = _useState12[0],
+      setHaveUser = _useState12[1];
+
   var history = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.useHistory)();
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    if (!currentUser) {
+    if (!haveUser) {
       axios__WEBPACK_IMPORTED_MODULE_1___default().get("".concat(baseUrl, "/api/user")).then(function (res) {
         setCurrentUser(res.data);
-        console.log(res.data);
+        setHaveUser(true);
 
         if (!res.data) {
           history.push("/");
         }
       });
     }
-  }, [currentUser]);
+  }, [haveUser]);
 
   var previewImage = function previewImage(e) {
     // var reader = new FileReader();
